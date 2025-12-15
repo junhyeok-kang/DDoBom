@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>또봄 북마크서비스</title>
+
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="https://code.jquery.com/ui/1.14.1/jquery-ui.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.30.1/moment-with-locales.min.js"></script>
+
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- HOME -->
+  <div id="home_index">
+    <div class="phone">
+      <div class="status_bar">
+        <h3 class="time">AM 10:00</h3>
+        <img src="img/Levels.svg" alt="">
+      </div>
+
+      <div class="app">
+        <div id="home_page">
+          <div id="logo_mg">
+            <img src="img/logo.svg" alt="logo" class="logo">
+            <div id="line"></div>
+            <h3 class="title">당신을 위한 기억 아카이브</h3>
+          </div>
+
+          <div class="search_bar">
+            <div class="selected_tag">
+              <img src="img/tag.svg" alt="">
+            </div>
+            <input type="text" name="search" class="search" placeholder="검색어를 입력하세요">
+            <img src="img/search.svg" alt="search" class="search_icon">
+          </div>
+        </div>
+
+        <div class="navigation">
+          <button class="home"><img src="img/home.svg" alt="home"></button>
+          <button class="add"><img src="img/add.svg" alt="add"></button>
+          <button class="bookmark"><img src="img/bookmark.svg" alt="bookmark"></button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ADD -->
+  <div id="add_index">
+    <div class="phone">
+      <div class="status_bar">
+        <h3 class="time">AM 10:00</h3>
+        <img src="img/Levels.svg" alt="">
+      </div>
+
+      <div class="app">
+        <div id="add_page">
+          <h1 class="page_title">새 북마크 저장</h1>
+
+          <div id="contents">
+            <img src="img/logo.svg" alt="logo" height="84px">
+
+            <div id="content">
+              <div id="url_input_box">
+                <textarea id="input_url" placeholder="저장하고 싶은 URL을 작성하세요."></textarea>
+              </div>
+
+              <div id="guide_box">
+                <h2 class="guide_title">또봄 북마크 가이드</h2>
+                <div id="guide">
+                  <p><img src="/img/dia.svg" alt=""> 웹 URL 적고 저장하기</p>
+                  <p><img src="/img/dia.svg" alt=""> URL 분석 후 카테고리 별 자동 저장</p>
+                  <p><img src="/img/dia.svg" alt=""> 북마크 목록에서 저장된 북마크 확인하기</p>
+                </div>
+              </div>
+
+              <button id="save_btn"><img src="img/save.svg" alt="">저장하기</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="navigation">
+          <button class="home"><img src="img/home.svg" alt="home"></button>
+          <button class="add"><img src="img/add.svg" alt="add"></button>
+          <button class="bookmark"><img src="img/bookmark.svg" alt="bookmark"></button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BOOKMARK LIST -->
+  <div id="bookmark_index">
+    <div class="phone">
+      <div class="status_bar">
+        <h3 class="time">AM 10:00</h3>
+        <img src="img/Levels.svg" alt="">
+      </div>
+
+      <div class="app_">
+        <div id="bookmark_page">
+          <div id="bookmark_top">
+            <h1 class="page_title"> 북마크 목록</h1>
+
+            <div id="bookmark_bar_nav">
+              <div class="search_bar">
+                <div class="selected_tag">
+                  <img src="img/tag.svg" alt="">
+                </div>
+                <input type="text" name="search" class="search" placeholder="검색어를 입력하세요">
+                <img src="img/search.svg" alt="search" class="search_icon">
+              </div>
+
+              <div id="web_filter"></div>
+            </div>
+          </div>
+
+          <div id="bookmark_contents_box">
+            <div id="bookmark_content"></div>
+          </div>
+        </div>
+
+        <div class="navigation">
+          <button class="home"><img src="img/home.svg" alt="home"></button>
+          <button class="add"><img src="img/add.svg" alt="add"></button>
+          <button class="bookmark"><img src="img/bookmark.svg" alt="bookmark"></button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="save_index">
+    <div class="phone">
+      <div class="status_bar">
+        <h3 class="time">AM 10:00</h3>
+        <img src="img/Levels.svg" alt="">
+      </div>
+
+      <div class="save_overlay">
+        <div class="save_modal" role="dialog" aria-modal="true">
+          <button class="save_close" type="button">
+            <img src="img/close.svg" alt="닫기">
+          </button>
+
+          <div class="save_modal_top">
+            <img src="img/effect.svg" alt="save" class="effect">
+            <img src="img/folder_back.svg" alt="save" class="folder">
+            <img src="img/document.svg" alt="save" class="document">
+            <img src="img/folder_front.svg" alt="save" class="folder">
+          </div>
+ 
+          <div class="save_modal_con">
+            <div class="save_modal_title">
+              <h2>북마크 저장 완료!</h2>
+              <p>새 북마크가 저장되었어요.<br>
+              언제든 다시 확인해보세요!
+              </p>
+            </div>
+
+            <div class="save_modal_btns">
+              <button id="list_btn" type="button">북마크 목록</button>
+              <button id="ok_btn" type="button">확인했어요</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="app">
+        <div class="navigation">
+          <button class="home"><img src="img/home.svg" alt="home"></button>
+          <button class="add"><img src="img/add.svg" alt="add"></button>
+          <button class="bookmark"><img src="img/bookmark.svg" alt="bookmark"></button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 오버레이 수정 -->
+  <div id="search_index">
+    <div class="phone">
+      <div class="status_bar">
+        <h3 class="time">AM 10:00</h3>
+        <img src="img/Levels.svg" alt="">
+      </div>
+
+      <div class="app">
+        <div class="search_page">
+          <div class="search_bar">
+            <div class="selected_tag">
+              <img src="img/tag.svg" alt="">
+            </div>
+            <input type="text" name="search" class="search" placeholder="검색어를 입력하세요">
+            <img src="img/search.svg" alt="search" class="search_icon">
+          </div>
+
+          <div id="search_category">
+            <div id="search_title">
+              <h2>카테고리</h2>
+              <p>키워드로 카테고리를 설정해보세요</p>
+            </div>
+
+            <div id="search_filter">
+              <div class="add_tag">
+                <button type="button">
+                  <img src="img/add_tag.svg" alt="">
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div id="add_tag_index">
+    <div class="phone">
+      <div class="status_bar">
+        <h3 class="time">AM 10:00</h3>
+        <img src="img/Levels.svg" alt="">
+      </div>
+
+      <div class="app">
+        <div id="add_tag_page">
+          <div id="add_tag_title">
+            <h2>추가하기</h2>
+            <p>나만의 카테고리를 추가해보세요</p>
+          </div>
+
+          <div id="add_tag_input_btn">
+            <div id="add_tag_input_box">
+              <input type="text" name="add_tag_input" class="add_tag_input" placeholder="입력하기">
+            </div>
+
+            <div id="add_tag_btns">
+              <button class="cancel_btn" type="button">취소할래요</button>
+              <button class="add_tag_btn" type="button">저장할래요</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="preview">
+    <button>시연용 버튼</button>
+  </div>
+  <script src="index.js"></script>
+</body>
+</html>
