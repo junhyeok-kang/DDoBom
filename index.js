@@ -1,12 +1,13 @@
+//시계
 function updateClock() {
   let now = moment();
   let timeString = now.format('A h:mm');
   $('.time').text(timeString);
 }
-
 moment.locale('ko');
 updateClock();
-setInterval(updateClock, 60000);
+//10초마다 업데이트
+setInterval(updateClock, 10000);
 
 /* =========================
    프레임 내부 전환 (메인 페이지만)
@@ -114,13 +115,14 @@ function openSearchOverlay(fromPage) {
 }
 
 function closeSearchOverlay(immediate = false) {
-  $('.search_page').css('margin-top', '58px');
   if (immediate) {
+    $('.search_page').css('margin-top', '58px');
     $('#search_index').hide().css({ 'z-index': -10, 'pointer-events': 'none' });
     return;
   }
   $('#search_index').fadeOut(140, function () {
     $(this).css({ 'z-index': -10, 'pointer-events': 'none' });
+    $('.search_page').css('margin-top', '58px');
   });
 }
 
@@ -267,7 +269,7 @@ $(function () {
   });
 
   $(document).on('click', '#save_index #ok_btn, #save_index .save_close', function () {
-    goPage('#home_index', 'right');
+    goPage('#add_index', 'right');
   });
 
   /* ===== 저장하기 버튼 (Gemini) ===== */
@@ -306,6 +308,8 @@ $(function () {
 
   /* ===== 카드 접힘/펼침 (화살표 제외) ===== */
   $(document).on('click', '.item_header', function (e) {
+    if (clickBlocked) return; // 스와이프 직후 클릭 방지
+
     if ($(e.target).closest('.item_go').length > 0) {
       return;
     }
@@ -442,7 +446,7 @@ $(function () {
    제미나이 호출
 ========================= */
 function geminiAi(urlinput, btnEl, originalBtnText) {
-  let apiKey = "AIzaSyDwgptiJE3MPWvdWv7V5uyao1bEMWRx5wk";
+  let apiKey = localStorage.getItem('gemini_api_key') || $('#api_key_input').val().trim();
   let prompt = `
     다음 링크의 내용을 아래 내용에 따라 분석해줘: ${urlinput}
 
@@ -498,7 +502,8 @@ function geminiAi(urlinput, btnEl, originalBtnText) {
       saved.unshift(article);
       localStorage.setItem('bookmarks', JSON.stringify(saved));
 
-      updateWebFilter();
+      updateWebFilter(); //웹사이트 목록 갱신
+      loadTags(); // 태그 목록 갱신
       $('#input_url').val('');
 
       goPage('#save_index', 'left');
@@ -862,6 +867,7 @@ function loadTags() {
 let swipeStartX = 0;
 let swipeStartY = 0;
 let isSwiping = false;
+let clickBlocked = false; // 클릭 방지 추가
 let currentSwipeItem = null;
 
 // 터치 시작
@@ -892,6 +898,10 @@ $(document).on('touchmove mousemove', function (e) {
   // 스와이프 시작 판단
   if (Math.abs(diffX) > 10) {
     isSwiping = true;
+    // 픽(Peek) 애니메이션 잔여 스타일 제거 (CSS 클래스 우선순위 보장)
+    if (currentSwipeItem) {
+      currentSwipeItem.find('.swipe_content').css('transform', '');
+    }
   }
 
   if (!isSwiping) {
@@ -919,6 +929,12 @@ $(document).on('touchmove mousemove', function (e) {
 
 // 터치 종료
 $(document).on('touchend mouseup mouseleave', function () {
+  if (isSwiping) {
+    clickBlocked = true;
+    setTimeout(() => {
+      clickBlocked = false;
+    }, 100); // 100ms 동안 클릭 차단
+  }
   currentSwipeItem = null;
   isSwiping = false;
 });
@@ -929,18 +945,85 @@ function saveAni() {
   $('.effect').delay(120).animate({ 'scale': '3' }, 300).delay(10).animate({ 'scale': '2.6' }, 100);
 }
 
-$(function(){
-  $('.preview button').click(function() {
+$(function () {
+  $('#demo_btn').click(function () {
 
     $('#save_btn')
       .html(`<img src="img/loading.gif" alt="" width="18px" style="margin-right:8px; vertical-align:middle;"> 분석 중...`)
 
-    setTimeout(	function(){
+    setTimeout(function () {
       $('#save_btn')
-      .html(`<img src="img/save.svg" alt="">저장하기`)
-      
+        .html(`<img src="img/save.svg" alt="">저장하기`)
+
       goPage('#save_index', 'left')
       saveAni();
-    },	640	);
-  }); 
+    }, 640);
+  });
+
+  // API Key 관리
+  let savedKey = localStorage.getItem('gemini_api_key');
+  if (savedKey) {
+    $('#api_key_input').val(savedKey);
+  }
+
+  $('#api_key_input').on('input', function () {
+    localStorage.setItem('gemini_api_key', $(this).val().trim());
+  });
+
+  $('#api_key_save_btn').click(function (e) {
+    e.stopPropagation();
+    let key = $('#api_key_input').val().trim();
+    if (key) {
+      localStorage.setItem('gemini_api_key', key);
+      alert("API Key가 저장되었습니다.");
+    } else {
+      alert("API Key를 입력해주세요.");
+    }
+  });
 });
+
+/* =========================
+   드래그 및 선택 방지
+========================= */
+$(document).on('dragstart', function () {
+  return false;
+});
+
+$(document).on('selectstart', function (e) {
+  if ($(e.target).is('input, textarea')) {
+    return true;
+  }
+  return false;
+});
+
+/* =========================
+   우측 호버 애니메이션
+   ========================= */
+$(document).on('mousemove', '.swipe_content', function (e) {
+  // 스와이프 중이거나, 이미 열려있으면 실행 X
+  if (isSwiping) return;
+  if (e.buttons > 0) return; // 드래그 중(클릭 상태)이면 실행 X
+  let parent = $(this).closest('.swipe_item');
+  if (parent.hasClass('open')) return;
+
+  let swipeRect = this.getBoundingClientRect();
+  //카드 오른쪽 - 마우스 x 좌표
+  let mouseRight = swipeRect.right - e.clientX;
+
+  // 오른쪽 50px 이내면 10px 밀기 
+  if (mouseRight < 50 && mouseRight >= 0) {
+    $(this).css('transform', 'translateX(-10px)');
+  } else {
+    // 그 외 영역이면 원상복귀
+    $(this).css('transform', '');
+  }
+});
+// 마우스 떠나면 초기화
+$(document).on('mouseleave', '.swipe_content', function () {
+  if (isSwiping) return;
+
+
+  $(this).css('transform', '');
+});
+
+
