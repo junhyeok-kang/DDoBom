@@ -568,9 +568,19 @@ button img {
 }
 
 @keyframes arrowPop {
-  0%   { transform: translateY(-50%) scale(0.92); opacity: 0.65; }
-  60%  { transform: translateY(-50%) scale(1.06); opacity: 1; }
-  100% { transform: translateY(-50%) scale(1); }
+  0% {
+    transform: translateY(-50%) scale(0.92);
+    opacity: 0.65;
+  }
+
+  60% {
+    transform: translateY(-50%) scale(1.06);
+    opacity: 1;
+  }
+
+  100% {
+    transform: translateY(-50%) scale(1);
+  }
 }
 
 .item_category {
@@ -716,7 +726,8 @@ button img {
   margin-bottom: 12px;
   overflow: hidden;
   border-radius: 6px;
-  background: transparent;       /* ✅ 빨간 배경 제거 */
+  background: transparent;
+  /* ✅ 빨간 배경 제거 */
 }
 
 .swipe_actions {
@@ -724,15 +735,18 @@ button img {
   top: 0;
   right: 0;
   width: 92px;
-  height: 116px;                 /* ✅ 헤더 높이만 */
+  height: 116px;
+  /* ✅ 헤더 높이만 */
   display: flex;
-  z-index: 1;                    /* ✅ 뒤에 깔리게 */
+  z-index: 1;
+  /* ✅ 뒤에 깔리게 */
 }
 
 .swipe_delete {
   width: 92px;
   height: 116px;
-  background: #F26464;           /* ✅ 빨간색은 여기만 */
+  background: #F26464;
+  /* ✅ 빨간색은 여기만 */
   color: #fff;
   display: flex;
   flex-direction: column;
@@ -743,7 +757,7 @@ button img {
   border-radius: 0 6px 6px 0;
   cursor: pointer;
   margin-left: -5px;
-  
+
 }
 
 .swipe_delete img {
@@ -760,7 +774,8 @@ button img {
 
 .swipe_content {
   position: relative;
-  z-index: 2;                    /* 카드가 위로 */
+  z-index: 2;
+  /* 카드가 위로 */
   transform: translateX(0);
   transition: transform 0.18s ease;
   will-change: transform;
@@ -816,49 +831,56 @@ button img {
   width: 18px;
   height: 18px;
 }
-#save_index .save_modal_top{
-  display:flex;
-  justify-content:center;
+
+#save_index .save_modal_top {
+  display: flex;
+  justify-content: center;
   padding-top: 40px;
 }
-.save_modal_top .folder{
-  position:absolute;
+
+.save_modal_top .folder {
+  position: absolute;
   top: 64px;
 }
-.save_modal_top .document{
-  position:absolute;
+
+.save_modal_top .document {
+  position: absolute;
   top: 20px;
 }
-.save_modal_top .effect{
+
+.save_modal_top .effect {
   transform-origin: center center;
 
-  position:absolute;
+  position: absolute;
   width: 100px;
   height: 100px;
   top: 70px;
 }
-.save_modal_con{
+
+.save_modal_con {
   margin-top: 120px;
   display: flex;
   flex-direction: column;
-  justify-content:center;
+  justify-content: center;
   gap: 60px;
 }
-.save_modal_title h2{
-  font-size:22px;
-  font-weight:700;
-  color:#202020;
-  text-align:center;
+
+.save_modal_title h2 {
+  font-size: 22px;
+  font-weight: 700;
+  color: #202020;
+  text-align: center;
 }
+
 .save_modal_title {
   display: flex;
   flex-direction: column;
   gap: 15px;
-  font-size:14px;
-  font-weight:500;
-  color:#696E82;
-  line-height:20px;
-  text-align:center;
+  font-size: 14px;
+  font-weight: 500;
+  color: #696E82;
+  line-height: 20px;
+  text-align: center;
 }
 
 #save_index .save_modal_btns {
@@ -1118,15 +1140,51 @@ a:-webkit-any-link {
 }
 
 
-/* 시연용 버튼 */
+/* 시연용 버튼 영역 */
+#demo_area {
+  position: fixed;
+  top: 50%;
+  left: calc(50% + 240px);
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 20px;
+}
 
-.preview button{
-  margin-top: 10%;
-  margin-left: 24%;
+#demo_btn {
   font-size: 20px;
   font-weight: 600;
   padding: 13px 32px;
   border-radius: 10px;
   background: #3E78FE;
   color: #fff;
+  border: none;
+  cursor: pointer;
+}
+
+#api_key_input_box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+}
+
+#api_key_input {
+  padding: 10px 16px;
+  width: 200px;
+  border: 1px solid #ccc;
+  border-radius: 6px 0 0 6px;
+  outline: none;
+  font-size: 14px;
+}
+
+#api_key_save_btn {
+  padding: 10px 16px;
+  cursor: pointer;
+  background: #3E78FE;
+  color: #fff;
+  border: 1px solid #3E78FE;
+  border-radius: 0 6px 6px 0;
+  font-size: 14px;
 }

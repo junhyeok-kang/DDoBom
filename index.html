@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ko">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -11,6 +12,7 @@
 
   <link rel="stylesheet" href="style.css" />
 </head>
+
 <body>
 
   <!-- HOME -->
@@ -149,12 +151,12 @@
             <img src="img/document.svg" alt="save" class="document">
             <img src="img/folder_front.svg" alt="save" class="folder">
           </div>
- 
+
           <div class="save_modal_con">
             <div class="save_modal_title">
               <h2>북마크 저장 완료!</h2>
               <p>새 북마크가 저장되었어요.<br>
-              언제든 다시 확인해보세요!
+                언제든 다시 확인해보세요!
               </p>
             </div>
 
@@ -244,9 +246,14 @@
     </div>
   </div>
 
-  <div class="preview">
-    <button>시연용 버튼</button>
+  <div id="demo_area">
+    <button id="demo_btn">시연용 버튼</button>
+    <div id="api_key_input_box">
+      <input type="password" id="api_key_input" placeholder="API Key 입력">
+      <button id="api_key_save_btn">입력</button>
+    </div>
   </div>
   <script src="index.js"></script>
 </body>
+
 </html>
