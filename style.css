@@ -256,15 +256,16 @@ button img {
   max-width: 60%;
   gap: 4px;
   pointer-events: auto;
+  cursor: pointer;
 }
 
 .selected_tag img {
   pointer-events: none;
 }
 
-/* 아이콘 자체는 클릭 대신 부모가 */
 .search_icon {
-  pointer-events: none;
+  pointer-events: auto;
+  cursor: pointer;
 }
 
 /* ADD */
