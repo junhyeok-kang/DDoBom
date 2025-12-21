@@ -9,39 +9,38 @@ updateClock();
 //10초마다 업데이트
 setInterval(updateClock, 10000);
 
-/* =========================
-   프레임 내부 전환 (메인 페이지만)
-========================= */
+
+// 프레임 내부 전환 (메인 페이지만)
 const PAGES = ['#home_index', '#add_index', '#bookmark_index', '#save_index'];
 let currentPage = '#home_index';
 let isTransitioning = false;
 
 // "프레임 내부 컨텐츠" 선택자
-function getInner(pageEl) {
-  const overlayEl = pageEl.find('.save_overlay');
-  if (overlayEl.length) {
-    return overlayEl;
+function getInner(page) {
+  const overlay = page.find('.save_overlay');
+  if (overlay.length) {
+    return overlay;
   }
 
-  const app2El = pageEl.find('.app_');
-  if (app2El.length) {
-    return app2El;
+  const app2 = page.find('.app_');
+  if (app2.length) {
+    return app2;
   }
 
-  return pageEl.find('.app');
+  return page.find('.app');
 }
 
 function initPages(start = '#home_index') {
   currentPage = start;
 
   PAGES.forEach(function (sel) {
-    const pageEl = $(sel);
+    const page = $(sel);
     if (sel === start) {
-      pageEl.show();
-      getInner(pageEl).css({ opacity: 1, transform: 'translateX(0)' });
+      page.show();
+      getInner(page).css({ opacity: 1, transform: 'translateX(0)' });
     } else {
-      pageEl.hide();
-      getInner(pageEl).css({ opacity: 0, transform: 'translateX(12px)' });
+      page.hide();
+      getInner(page).css({ opacity: 0, transform: 'translateX(12px)' });
     }
   });
 
@@ -59,43 +58,43 @@ function goPage(target, dir = 'left') {
 
   isTransitioning = true;
 
-  const fromPageEl = $(currentPage);
-  const toPageEl = $(target);
+  const fromPage = $(currentPage);
+  const toPage = $(target);
 
-  const fromInnerEl = getInner(fromPageEl);
-  const toInnerEl = getInner(toPageEl);
+  const fromInner = getInner(fromPage);
+  const toInner = getInner(toPage);
 
   const inX = (dir === 'left') ? '12px' : '-12px';
   const outX = (dir === 'left') ? '-12px' : '12px';
 
-  toPageEl.show();
+  toPage.show();
 
-  toInnerEl.stop(true, true).css({
+  toInner.stop(true, true).css({
     opacity: 0,
     transform: `translateX(${inX})`,
     transition: 'transform 260ms ease'
   });
 
-  fromInnerEl.css({ transition: 'transform 220ms ease' });
-  fromInnerEl.stop(true, true).animate({ opacity: 0 }, 200);
-  fromInnerEl.css({ transform: `translateX(${outX})` });
+  fromInner.css({ transition: 'transform 220ms ease' });
+  fromInner.stop(true, true).animate({ opacity: 0 }, 200);
+  fromInner.css({ transform: `translateX(${outX})` });
 
-  toInnerEl.stop(true, true).animate({ opacity: 1 }, 240);
-  toInnerEl.css({ transform: 'translateX(0)' });
+  toInner.stop(true, true).animate({ opacity: 1 }, 240);
+  toInner.css({ transform: 'translateX(0)' });
 
   setTimeout(function () {
-    fromPageEl.hide();
-    fromInnerEl.css({ opacity: 1, transform: 'translateX(0)', transition: '' });
-    toInnerEl.css({ transition: '' });
+    fromPage.hide();
+    fromInner.css({ opacity: 1, transform: 'translateX(0)', transition: '' });
+    toInner.css({ transition: '' });
 
     currentPage = target;
     isTransitioning = false;
   }, 280);
 }
 
-/* =========================
-   검색창, 태그 추가 오버레이
-========================= */
+
+// 검색창, 태그 추가 오버레이
+
 let prevPageForOverlay = '#bookmark_index';
 
 function openSearchOverlay(fromPage) {
@@ -144,9 +143,9 @@ function closeAddTagOverlay(immediate = false) {
   });
 }
 
-/* =========================
-   툭툭툭 애니메이션 트리거 (공용)
-========================= */
+
+// 툭툭툭 애니메이션 트리거 (공용)
+
 function applyPopAnimation(containerEl) {
   const items = containerEl.find(".swipe_item");
   if (items.length === 0) {
@@ -162,11 +161,11 @@ function applyPopAnimation(containerEl) {
   });
 }
 
-/* =========================
-   스와이프 상태에 맞춰 화살표 바꾸기
-   - 닫힘: left_arrow.svg
-   - 열림: right_arrow.svg
-========================= */
+
+// 스와이프 상태에 맞춰 화살표 바꾸기
+// - 닫힘: left_arrow.svg
+// - 열림: right_arrow.svg
+
 function syncSwipeArrow(swipeItemEl, withPop = true) {
   const arrowEl = swipeItemEl.find('.item_go');
   if (!arrowEl.length) {
@@ -192,9 +191,9 @@ function syncSwipeArrow(swipeItemEl, withPop = true) {
   }
 }
 
-/* =========================
-   앱 로직
-========================= */
+
+// 앱 로직
+
 $(function () {
   initPages('#home_index');
 
@@ -219,12 +218,14 @@ $(function () {
     renderBookmarks();
   });
 
-  /* ===== 검색 오버레이 열기 ===== */
-  $(document).on('click', '#bookmark_index .search_bar', function () {
+  // 검색 오버레이 열기
+  $(document).on('click', '#bookmark_index .search_bar', function (e) {
+    if ($(e.target).closest('.search_icon').length > 0) return;
     openSearchOverlay('#bookmark_index');
   });
 
-  $(document).on('click', '#home_index .search_bar', function () {
+  $(document).on('click', '#home_index .search_bar', function (e) {
+    if ($(e.target).closest('.search_icon').length > 0) return;
     openSearchOverlay('#home_index');
   });
 
@@ -261,7 +262,7 @@ $(function () {
     closeAddTagOverlay();
   });
 
-  /* ===== 저장 완료 모달 버튼 ===== */
+  // 저장 완료 모달 버튼
   $(document).on('click', '#save_index #list_btn', function () {
     goPage('#bookmark_index', 'right');
     updateWebFilter();
@@ -272,7 +273,7 @@ $(function () {
     goPage('#add_index', 'right');
   });
 
-  /* ===== 저장하기 버튼 (Gemini) ===== */
+  // 저장하기 버튼 (Gemini)
   $('#save_btn').on('click', function () {
     let url = $('#input_url').val().trim();
     if (!url) {
@@ -288,7 +289,7 @@ $(function () {
     geminiAi(url, $(this), originalBtnText);
   });
 
-  /* ===== 필터 선택 ===== */
+  // 필터 선택
   $('#web_filter').on('click', '.category, .selected_category', function () {
     $('#web_filter .selected_category').removeClass('selected_category').addClass('category');
     $(this).removeClass('category').addClass('selected_category');
@@ -296,7 +297,7 @@ $(function () {
     renderBookmarks(selectedWebsite);
   });
 
-  /* ===== 삭제 버튼 ===== */
+  // 삭제 버튼
   $(document).on('click', '.delete_btn', function (e) {
     e.stopPropagation();
     let index = $(this).data('index');
@@ -306,7 +307,7 @@ $(function () {
     renderBookmarks();
   });
 
-  /* ===== 카드 접힘/펼침 (화살표 제외) ===== */
+  // 카드 접힘/펼침 (화살표 제외)
   $(document).on('click', '.item_header', function (e) {
     if (clickBlocked) return; // 스와이프 직후 클릭 방지
 
@@ -316,19 +317,19 @@ $(function () {
     $(this).closest('.bookmark_item').toggleClass('collapsed');
   });
 
-  /* 클릭해서 삭제하는 버튼 없앰 (사유 : 스와이프 구현)*/
-  /*
-  $(document).on('click', '.item_go', function (e) {
-    e.preventDefault();
-    e.stopPropagation();
+  // 클릭해서 삭제하는 버튼 없앰 (사유 : 스와이프 구현)
+  //
+  // $(document).on('click', '.item_go', function (e) {
+  //   e.preventDefault();
+  //   e.stopPropagation();
+  //
+  //   let swipeEl = $(this).closest('.swipe_item');
+  //   $('.swipe_item').not(swipeEl).removeClass('open');
+  //   swipeEl.toggleClass('open');
+  // });
+  //
 
-    let swipeEl = $(this).closest('.swipe_item');
-    $('.swipe_item').not(swipeEl).removeClass('open');
-    swipeEl.toggleClass('open');
-  });
-  */
-
-  /* ===== 바깥 클릭 -> 열린 삭제 패널 닫기 + 화살표 복귀 ===== */
+  // 바깥 클릭 -> 열린 삭제 패널 닫기 + 화살표 복귀
   $(document).on('click', function (e) {
     if ($(e.target).closest('.swipe_item').length === 0) {
       $('.swipe_item.open').each(function () {
@@ -339,10 +340,10 @@ $(function () {
     }
   });
 
-  /* ===== 검색 태그 체크박스 UI ===== */
+  // 검색 태그 체크박스 UI
   $("#search_filter input[type=checkbox]").checkboxradio({ icon: false });
 
-  /* ===== 모든 검색 input 동기화 ===== */
+  // 검색동기화
   $(document).on('input', '.search', function () {
     let keyword = $(this).val();
     $('.search').val(keyword);
@@ -351,7 +352,7 @@ $(function () {
     renderBookmarks(currentWebsite);
   });
 
-  /* ===== 엔터 검색 (오버레이 닫기 포함) ===== */
+  // 엔터 검색 (오버레이 닫기 포함)
   $(document).on('keypress', '.search', function (e) {
     if (e.which === 13) {
       e.preventDefault();
@@ -371,7 +372,24 @@ $(function () {
     }
   });
 
-  /* ===== 태그 로딩 ===== */
+  // 검색 아이콘 클릭
+  $(document).on('click', '.search_icon', function (e) {
+    let searchInput = $(this).siblings('.search');
+    let searchText = searchInput.val().trim();
+
+    if (searchText) {
+      e.stopPropagation();
+      searchBookmarks(searchText);
+      closeSearchOverlay();
+
+      if (currentPage !== '#bookmark_index') {
+        goPage('#bookmark_index', 'left');
+        updateWebFilter();
+      }
+    }
+  });
+
+  // 태그 로딩
   loadTags();
 
   $("#search_filter").on("change", "input[type=checkbox]", function () {
@@ -380,11 +398,11 @@ $(function () {
     let tagText = labelEl.text();
 
     if ($(this).is(":checked")) {
-      if ($(".selected_tag .selected-item").length >= 1) {
-        alert("태그는 하나만 선택 가능합니다.");
-        $(this).prop("checked", false).checkboxradio("refresh");
-        return;
-      }
+      // 이전 체크박스 해제
+      $("#search_filter input[type=checkbox]").not(this).prop("checked", false).checkboxradio("refresh");
+
+      // 기존 선택된 태그 UI 제거
+      $(".selected_tag .selected-item").remove();
 
       if ($(".selected_tag .selected-item[data-id='" + id + "']").length === 0) {
         $(".selected_tag").append(
@@ -413,7 +431,7 @@ $(function () {
     }
   });
 
-  /* ===== 커스텀 태그 추가 ===== */
+  // 커스텀 태그 추가
   $(document).on('click', '.add_tag_btn', function () {
     let tagName = $('.add_tag_input').val().trim();
     if (!tagName) {
@@ -442,9 +460,9 @@ $(function () {
   });
 });
 
-/* =========================
-   제미나이 호출
-========================= */
+
+// 제미나이 호출
+
 function geminiAi(urlinput, btnEl, originalBtnText) {
   let apiKey = localStorage.getItem('gemini_api_key') || $('#api_key_input').val().trim();
   let prompt = `
@@ -520,9 +538,9 @@ function geminiAi(urlinput, btnEl, originalBtnText) {
   });
 }
 
-/* =========================
-   추천 로직
-========================= */
+
+// 추천 로직
+
 function getRecommend(saved, baseIndex, limit) {
   limit = limit || 3;
 
@@ -558,9 +576,9 @@ function getRecommend(saved, baseIndex, limit) {
   return result.slice(0, limit);
 }
 
-/* =========================
-   북마크 렌더링
-========================= */
+
+// 북마크 렌더링
+
 function renderBookmarks(filterText = '전체') {
   let saved = JSON.parse(localStorage.getItem('bookmarks') || '[]');
   $("#bookmark_content").empty();
@@ -683,9 +701,9 @@ function renderBookmarks(filterText = '전체') {
   applyPopAnimation($("#bookmark_content"));
 }
 
-/* =========================
-   검색 결과 렌더
-========================= */
+
+// 검색 결과 렌더
+
 function searchBookmarks(searchText) {
   let saved = JSON.parse(localStorage.getItem('bookmarks') || '[]');
   $("#bookmark_content").empty();
@@ -795,9 +813,9 @@ function searchBookmarks(searchText) {
   applyPopAnimation($("#bookmark_content"));
 }
 
-/* =========================
-   필터 생성
-========================= */
+
+// 필터 생성
+
 function updateWebFilter() {
   let saved = JSON.parse(localStorage.getItem('bookmarks') || '[]');
   $('#web_filter').empty();
@@ -823,9 +841,9 @@ function updateWebFilter() {
   });
 }
 
-/* =========================
-   태그 로딩
-========================= */
+
+// 태그 로딩
+
 function loadTags() {
   let defaultTags = ['기타'];
 
@@ -842,28 +860,39 @@ function loadTags() {
 
   let allTags = new Set([...defaultTags, ...bookmarkCategories, ...customTags]);
 
-  let addTagBtnEl = $("#search_filter .add_tag");
-  if (addTagBtnEl.length === 0) {
+  let addTagBtn = $("#search_filter .add_tag");
+  if (addTagBtn.length === 0) {
     return;
   }
 
-  addTagBtnEl.prevAll().remove();
+
+  // 1) 현재 선택된 태그 목록 저장
+  let selectedTagNames = [];
+  $(".selected_tag .selected-item").each(function () {
+    selectedTagNames.push($(this).text().replace('#', '').trim());
+  });
+
+  addTagBtn.prevAll().remove();
 
   let index = 1;
   allTags.forEach(function (tag) {
     let id = "tag_dynamic_" + index++;
+    // 2) 태그 생성 시, 이전에 선택된 태그라면 checked 속성 추가
+    let checked = selectedTagNames.includes(tag) ? "checked" : "";
+
     let html = `
-      <input type="checkbox" name="tag" id="${id}">
+      <input type="checkbox" name="tag" id="${id}" ${checked}>
       <label for="${id}">#${tag}</label>
     `;
-    $(html).insertBefore(addTagBtnEl);
+    $(html).insertBefore(addTagBtn);
+
+    // checkboxradio 초기화 및 refresh
     $("#" + id).checkboxradio({ icon: false });
   });
 }
 
-/* =========================
-   스와이프 가능하게 하는 코드
-========================= */
+// 스와이프 가능하게 하는 코드
+
 let swipeStartX = 0;
 let swipeStartY = 0;
 let isSwiping = false;
@@ -961,9 +990,9 @@ $(function () {
   });
 
   // API Key 관리
-  let savedKey = localStorage.getItem('gemini_api_key');
-  if (savedKey) {
-    $('#api_key_input').val(savedKey);
+  let keySave = localStorage.getItem('gemini_api_key');
+  if (keySave) {
+    $('#api_key_input').val(keySave);
   }
 
   $('#api_key_input').on('input', function () {
@@ -982,9 +1011,9 @@ $(function () {
   });
 });
 
-/* =========================
-   드래그 및 선택 방지
-========================= */
+
+// 드래그 및 선택 방지
+
 $(document).on('dragstart', function () {
   return false;
 });
@@ -996,9 +1025,9 @@ $(document).on('selectstart', function (e) {
   return false;
 });
 
-/* =========================
-   우측 호버 애니메이션
-   ========================= */
+
+// 우측 호버 애니메이션
+
 $(document).on('mousemove', '.swipe_content', function (e) {
   // 스와이프 중이거나, 이미 열려있으면 실행 X
   if (isSwiping) return;
@@ -1025,5 +1054,3 @@ $(document).on('mouseleave', '.swipe_content', function () {
 
   $(this).css('transform', '');
 });
-
-
